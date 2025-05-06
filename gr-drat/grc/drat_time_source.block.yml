@@ -1,0 +1,35 @@
+id: drat_time_source
+label: DRaT Time Source
+category: '[DRaT]'
+
+templates:
+  imports: from gnuradio import drat
+  make: drat.time_source(${ip}, ${port}, ${samp_rate}, ${flow_id}, ${initial_timestamp}, ${period})
+
+parameters:
+- id: ip
+  label: Destination address
+  dtype: string
+  default: '127.0.0.1'
+- id: port
+  label: Destination port
+  dtype: int
+  default: 1234
+- id: samp_rate
+  label: Sample rate
+  dtype: float
+  default: samp_rate
+- id: flow_id
+  label: Flow ID
+  dtype: int
+  default: 0
+- id: initial_timestamp
+  label: Initial timestamp
+  dtype: int
+  default: 0
+- id: period
+  label: Period (s)
+  dtype: float
+  default: 0.1
+
+file_format: 1

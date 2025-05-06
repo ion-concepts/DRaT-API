@@ -1,0 +1,54 @@
+id: drat_convert_from_signmag
+label: Convert from Sign-Magnitude
+category: '[DRaT]'
+
+templates:
+  imports: from gnuradio import drat
+  make: drat.convert_from_signmag_s${type.fcn}${mag_first.fcn}(${vlen_in}, ${vlen_out} * ${type.vlen_mult}, ${scale})
+  callbacks:
+  - set_scale(${scale})
+
+parameters:
+- id: type
+  label: IO Type
+  dtype: enum
+  options: [complex, float, int, short, byte]
+  option_attributes:
+    fcn: [f, f, i, s, b]
+    vlen_mult: [2, 1, 1, 1]
+  hide: part
+- id: vlen_in
+  label: Input Vector Length
+  dtype: int
+  default: '1'
+  hide: ${ 'part' if vlen_in == 1 else 'none' }
+- id: vlen_out
+  label: Output Vector Length
+  dtype: int
+  default: '1'
+  hide: ${ 'part' if vlen_out == 1 else 'none' }
+- id: scale
+  label: Scale
+  dtype: float
+  default: '1.0'
+- id: mag_first
+  label: Magnitude First
+  dtype: enum
+  default: 'False'
+  options: ['True', 'False']
+  option_labels: [Enabled, Disabled]
+  option_attributes:
+    fcn: [T, F]
+  hide: ${ 'part' if mag_first == 'False' else 'none' }
+
+inputs:
+- domain: stream
+  dtype: short
+  vlen: ${ vlen_in }
+
+outputs:
+- domain: stream
+  dtype: ${ type }
+  vlen: ${ vlen_out }
+
+file_format: 1

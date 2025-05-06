@@ -1,0 +1,117 @@
+id: drat_udp_source
+label: DRaT UDP Source
+category: '[DRaT]'
+
+templates:
+  imports: from gnuradio import drat
+  make: drat.udp_source_${type.fcn}(${listen_addr}, ${listen_port}, ${samp_rate}, ${timestamp_epoch}, ${flow_id if filter_flow == 'True' else -1}, ${burst_mode}, ${status_addr}, ${status_port}, ${status_flow_id}, ${send_ack_every}, ${zero_fill_lost}, ${ticks_per_sample}, ${recv_timeout}, ${drat_type if custom_drat_types == 'True' else -1}, ${drat_type_eob if custom_drat_types == 'True' else -1})
+
+parameters:
+- id: type
+  label: IO Type
+  dtype: enum
+  options: [complex, complex16, float, byte]
+  option_attributes:
+      t: [fc32, sc16, float, byte]
+      fcn: [fc32, sc16, f, b]
+  hide: part
+- id: listen_addr
+  label: Listen address
+  dtype: string
+  default: '0.0.0.0'
+- id: listen_port
+  label: Listen port
+  dtype: int
+  default: 1234
+- id: samp_rate
+  label: Timestamp sample rate
+  dtype: float
+  default: samp_rate
+- id: timestamp_epoch
+  label: Timestamp epoch
+  dtype: float
+  default: 0.0
+- id: filter_flow
+  label: Filter by flow ID
+  hide: ${ 'part' if filter_flow == 'True' else 'none' }
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['True', 'False']
+  default: 'False'
+- id: flow_id
+  label: Flow ID
+  hide: ${ 'all' if filter_flow == 'False' else 'none' }
+  dtype: int
+  default: 0
+- id: burst_mode
+  label: Burst mode
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Enabled', 'Disabled']
+  default: 'False'
+- id: status_addr
+  label: Status/error address
+  dtype: string
+  default: ''
+  hide: ${ 'part' if not status_addr else 'none' }
+- id: status_port
+  label: Status/error port
+  dtype: int
+  default: 1234
+  hide: ${ 'all' if not status_addr else 'part' }
+- id: status_flow_id
+  label: Status/error flow ID
+  dtype: int
+  default: 0
+  hide: ${ 'all' if not status_addr else 'part' }
+- id: send_ack_every
+  label: Send ack every
+  dtype: int
+  default: 0
+  hide: ${ 'all' if not status_addr else 'part' }
+- id: zero_fill_lost
+  label: Zero-fill lost packets
+  hide: ${ 'part' if zero_fill_lost == 'False' else 'none' }
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Enabled', 'Disabled']
+  default: 'False'
+- id: ticks_per_sample
+  label: Ticks per sample
+  hide: ${ 'all' if zero_fill_lost == 'False' else 'part' if ticks_per_sample == 1 else 'none' }
+  dtype: int
+  default: 1
+- id: recv_timeout
+  label: Receive timeout (ms)
+  hide: part
+  dtype: float
+  default: -1.0
+- id: custom_drat_types
+  label: Use custom DRaT types
+  hide: 'part'
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Yes', 'No']
+  default: 'False'
+- id: drat_type
+  label: DRaT type
+  hide: ${ 'part' if custom_drat_types == 'True' else 'all' }
+  dtype: int
+  default: 0
+- id: drat_type_eob
+  label: DRaT EOB type
+  hide: ${ 'part' if custom_drat_types == 'True' else 'all' }
+  dtype: int
+  default: 0
+
+outputs:
+- domain: stream
+  dtype: ${ type.t }
+- id: timestamps
+  domain: message
+  optional: true
+- id: lost_packets
+  domain: message
+  optional: true
+
+file_format: 1

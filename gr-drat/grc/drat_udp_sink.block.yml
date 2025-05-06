@@ -1,0 +1,149 @@
+id: drat_udp_sink
+label: DRaT UDP Sink
+category: '[DRaT]'
+
+templates:
+  imports: from gnuradio import drat
+  make: drat.udp_sink_${type.fcn}(${dest_addr}, ${dest_port}, ${samp_rate}, ${flow_id}, ${packet_size}, ${ticks_per_sample}, ${timestamp_epoch}, ${self_clocked}, ${async_mode}, ${initial_time}, ${time_report_addr}, ${time_report_port}, ${time_report_flow_id if time_report_filter_flow == 'True' else -1}, ${status_addr}, ${status_port}, ${status_flow_id if status_filter_flow == 'True' else -1}, ${maximum_latency}, ${burst_mode}, ${len_tag_key}, ${drat_type if custom_drat_types == 'True' else -1}, ${drat_type_eob if custom_drat_types == 'True' else -1})
+
+parameters:
+- id: type
+  label: IO Type
+  dtype: enum
+  options: [complex, complex16, float, byte]
+  option_attributes:
+      t: [fc32, sc16, float, byte]
+      fcn: [fc32, sc16, f, b]
+  hide: part
+- id: dest_addr
+  label: Destination address
+  dtype: string
+  default: '127.0.0.1'
+- id: dest_port
+  label: Destination port
+  dtype: int
+  default: 1234
+- id: samp_rate
+  label: Sample rate
+  dtype: float
+  default: samp_rate
+- id: ticks_per_sample
+  label: Ticks per sample
+  hide: ${ 'part' if ticks_per_sample == 1 else 'none' }
+  dtype: int
+  default: 1
+- id: timestamp_epoch
+  label: Timestamp epoch
+  dtype: float
+  default: 0.0
+- id: flow_id
+  label: Flow ID
+  dtype: int
+  default: 0
+- id: packet_size
+  label: Packet size
+  dtype: int
+  default: 1472
+- id: self_clocked
+  label: Self-clocked mode
+  hide: ${ 'part' if self_clocked == 'False' else 'none' }
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['True', 'False']
+  default: 'False'
+- id: async_mode
+  label: Async mode
+  hide: ${ 'part' if self_clocked == 'True' else 'all' }
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['True', 'False']
+  default: 'False'
+- id: initial_time
+  label: Initial timestamp
+  hide: ${ 'part' if self_clocked == 'True' and async_mode == 'False' and burst_mode == 'False' and len_tag_key == '' else 'all' }
+  dtype: float
+  default: 0.0
+- id: time_report_addr
+  label: Time report address
+  hide: ${ 'none' if self_clocked == 'False' else 'all' }
+  dtype: string
+  default: '0.0.0.0'
+- id: time_report_port
+  label: Time report port
+  hide: ${ 'none' if self_clocked == 'False' else 'all' }
+  dtype: int
+  default: 1234
+- id: time_report_filter_flow
+  label: Time report filter by flow ID
+  hide: ${ 'all' if self_clocked ==  'True' else 'part' if time_report_filter_flow == 'True' else 'none' }
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['True', 'False']
+  default: 'False'
+- id: time_report_flow_id
+  label: Time report flow ID
+  hide: ${ 'all' if self_clocked == 'True' or time_report_filter_flow == 'False' else 'none' }
+  dtype: int
+  default: 0
+- id: status_addr
+  label: Status/error address
+  hide: 'part'
+  dtype: string
+  default: ''
+- id: status_port
+  label: Status/error port
+  hide: ${ 'part' if status_addr else 'all' }
+  dtype: int
+  default: 1234
+- id: status_filter_flow
+  label: Status/error filter by flow ID
+  hide: ${ 'part' if status_addr else 'all' }
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['True', 'False']
+  default: 'False'
+- id: status_flow_id
+  label: Status/error flow ID
+  hide: ${ 'part' if status_addr and status_filter_flow == 'True' else 'all' }
+  dtype: int
+  default: 0
+- id: maximum_latency
+  label: Maximum latency (ms)
+  hide: ${ 'all' if self_clocked == 'True' else 'none' }
+  dtype: int
+  default: 100
+- id: burst_mode
+  label: Use SOB/EOB
+  hide: ${ 'part' if burst_mode == 'False' else 'none' }
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Enabled', 'Disabled']
+  default: 'False'
+- id: len_tag_key
+  label: Tagged stream key
+  hide: ${ 'all' if burst_mode == 'True' else 'part' if len_tag_key == '' else 'none' }
+  dtype: string
+  default: ''
+- id: custom_drat_types
+  label: Use custom DRaT types
+  hide: 'part'
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Yes', 'No']
+  default: 'False'
+- id: drat_type
+  label: DRaT type
+  hide: ${ 'part' if custom_drat_types == 'True' else 'all' }
+  dtype: int
+  default: 0
+- id: drat_type_eob
+  label: DRaT EOB type
+  hide: ${ 'part' if custom_drat_types == 'True' else 'all' }
+  dtype: int
+  default: 0
+
+inputs:
+- domain: stream
+  dtype: ${ type.t }
+
+file_format: 1

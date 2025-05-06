@@ -1,0 +1,16 @@
+/* -*- c++ -*- */
+/*
+ * Copyright 2023 gr-drat author.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#ifndef INCLUDED_DRAT_ENDIAN_H
+#define INCLUDED_DRAT_ENDIAN_H
+
+#define DRAT_LITTLE_ENDIAN 0
+#define DRAT_BIG_ENDIAN 1
+
+#define DRAT_BYTE_ORDER DRAT_@CMAKE_CXX_BYTE_ORDER@
+
+#endif /* INCLUDED_DRAT_ENDIAN_H */
